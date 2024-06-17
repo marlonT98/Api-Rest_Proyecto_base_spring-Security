@@ -13,6 +13,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
@@ -23,8 +25,11 @@ public class User {
     private Long id;
 
     @Column(unique = true)
+    @NotBlank//validamos que no sea vacio
+    @Size( min = 4 , max = 12 )//tamaño de caracteres autorizados
     private String username;
 
+    @NotBlank//validamos que no sea vacio
     private String password;
 
     @ManyToMany
