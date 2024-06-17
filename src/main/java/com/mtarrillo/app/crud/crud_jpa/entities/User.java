@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
 
 @Entity
@@ -35,6 +36,8 @@ public class User {
     )
     private List< Role > roles;
 
+    @Transient//es un campo que no es de table
+    private boolean admin;//este no es un campo de la bdd (solamente es una bandera)
     //aqui los contructores no es necesario
 
     public Long getId() {
@@ -67,6 +70,14 @@ public class User {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
     
     
