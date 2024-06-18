@@ -20,7 +20,7 @@ import com.mtarrillo.app.crud.crud_jpa.services.UserService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
@@ -33,7 +33,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/save")
+    @PostMapping
     public ResponseEntity<?> save( @Valid @RequestBody User user ,BindingResult result) {
           
         //validation.validate(product, result);

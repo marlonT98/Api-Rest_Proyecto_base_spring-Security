@@ -41,6 +41,8 @@ public class User {
     )
     private List< Role > roles;
 
+    private boolean enabled;//para desabilitar un rol (ejemplo para adesabilitar un usuario)
+
     @Transient//es un campo que no es de table
     private boolean admin;//este no es un campo de la bdd (solamente es una bandera)
     //aqui los contructores no es necesario
@@ -84,6 +86,16 @@ public class User {
     public void setAdmin(boolean admin) {
         this.admin = admin;
     }
+
+    
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+    
     
     
 
