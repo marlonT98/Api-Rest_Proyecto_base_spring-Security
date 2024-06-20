@@ -2,6 +2,9 @@ package com.mtarrillo.app.crud.crud_jpa.entities;
 
 import java.util.List;
 
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
@@ -30,6 +34,7 @@ public class User {
     private String username;
 
     @NotBlank//validamos que no sea vacio
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)//ya no lo muestra en el json
     private String password;
 
     @ManyToMany
@@ -41,7 +46,16 @@ public class User {
     )
     private List< Role > roles;
 
+    //inicializando enabled en true
+    @PrePersist 
+    public void PrePersist(){
+        enabled=true;
+    }
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)//ya no lo muestra en el json
     private boolean enabled;//para desabilitar un rol (ejemplo para adesabilitar un usuario)
+
+   
 
     @Transient//es un campo que no es de table
     private boolean admin;//este no es un campo de la bdd (solamente es una bandera)
