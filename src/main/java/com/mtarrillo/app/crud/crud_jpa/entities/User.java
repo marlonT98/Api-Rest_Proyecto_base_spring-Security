@@ -1,8 +1,9 @@
 package com.mtarrillo.app.crud.crud_jpa.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -37,6 +38,7 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)//ya no lo muestra en el json
     private String password;
 
+    @JsonIgnoreProperties({"users","handler","hibernateLazyInitializer"})//ignora la propiedad actual 
     @ManyToMany
     @JoinTable(
         name = "users_roles",
@@ -46,20 +48,26 @@ public class User {
     )
     private List< Role > roles;
 
+    //inicializamos la lista de roles por medio de un constructor
+    public User() {
+       roles = new ArrayList<>();
+    }
+
+    @Transient//es un campo que no es de table
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)//ya no lo muestra en el json
+    private boolean admin;//este no es un campo de la bdd (solamente es una bandera)
+
+
     //inicializando enabled en true
     @PrePersist 
     public void PrePersist(){
         enabled=true;
     }
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)//ya no lo muestra en el json
+    //este campo es el que me interesa para saber si esta habilitado o no
     private boolean enabled;//para desabilitar un rol (ejemplo para adesabilitar un usuario)
 
-   
 
-    @Transient//es un campo que no es de table
-    private boolean admin;//este no es un campo de la bdd (solamente es una bandera)
-    //aqui los contructores no es necesario
 
     public Long getId() {
         return id;
@@ -108,6 +116,37 @@ public class User {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((username == null) ? 0 : username.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        User other = (User) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (username == null) {
+            if (other.username != null)
+                return false;
+        } else if (!username.equals(other.username))
+            return false;
+        return true;
     }
     
     

@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> save( @Valid @RequestBody User user ,BindingResult result) {
+    public ResponseEntity<?> create( @Valid @RequestBody User user ,BindingResult result) {
           
         //validation.validate(product, result);
           if (result.hasFieldErrors()) {//so ocurrio un error
@@ -48,6 +48,17 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
 
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register( @Valid @RequestBody User user ,BindingResult result) {
+          
+   
+        user.setAdmin(false);//al user lo asiganamos el set admin a false
+        return create( user, result );//pasamos al create el cual  validara y guaradara
+
+    }
+
+
 
 
 

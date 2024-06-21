@@ -2,6 +2,7 @@ package com.mtarrillo.app.crud.crud_jpa.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,8 +23,9 @@ public class SpringSecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-      return http.authorizeHttpRequests( (authz) ->
-       authz.requestMatchers("/api/users").permitAll()//dejamos publico la ruta users
+      return http.authorizeHttpRequests( (authz) -> authz
+       .requestMatchers(HttpMethod.GET,  "/api/users").permitAll()//dejamos publico la ruta users
+       .requestMatchers(HttpMethod.POST,  "/api/users/register").permitAll()//dejamos publico
            .anyRequest().authenticated()//los demas requiere autenticacion
       )
       .csrf( 
