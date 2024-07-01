@@ -77,23 +77,23 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             Authentication authResult) throws IOException, ServletException {
      
 
-                //obteniendo el username
-                User user = (User) authResult.getPrincipal();//devuelve un objeto usuario 
+                //estamos haciendo referencia al User de spring no del nuestro (por eso estamos espicificando desde su paquete)
+                org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authResult.getPrincipal();//devuelve un objeto usuario 
                 String username =user.getUsername(); //aqui obtenemos el usernmae
 
                 //roles
                 Collection<? extends GrantedAuthority> roles  =   authResult.getAuthorities();//devuelve un tipo
-                //los roles tenemos que pasar a los claims(estos son datos)
-                Claims claims = Jwts.claims().build();
-                claims.put("authorities", roles);
+                //los roles tenemos que pasar a los claims(los claims son  son datos)
+                Claims claims = Jwts.claims()
+                      .add("authorities", roles)
+                      .add("username",username)
+                      .build();
 
-
-
-
+            
                 //creamos el el token
                 String token = Jwts.builder()
-                .subject(username)
-                .claims(claims)
+                .subject(username)//pasamos el usuario
+                .claims(claims)//pasamos los datos
                 .expiration(new Date(System.currentTimeMillis() + 3600000))//fecha actul + una hora
                 .issuedAt(new Date())//fecha actual
                 .signWith(SECRET_KEY)
