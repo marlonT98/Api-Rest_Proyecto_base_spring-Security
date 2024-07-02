@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.mtarrillo.app.crud.crud_jpa.security.filter.JwtAuthenticationFilter;
+import com.mtarrillo.app.crud.crud_jpa.security.filter.JwtValidationFilter;
 
 @Configuration
 public class SpringSecurityConfig {
@@ -49,6 +50,7 @@ public class SpringSecurityConfig {
            .anyRequest().authenticated()//los demas requiere autenticacion
       )
       .addFilter( new  JwtAuthenticationFilter( authenticationManager()  ))//pasamos por argumento( nuestro metodo)
+      .addFilter( new  JwtValidationFilter( authenticationManager() ))//pasamos por argumento( nuestro metodo)
       .csrf( 
             config->  config.disable()//no lo necesitamos en una ApiRest
       )
