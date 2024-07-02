@@ -51,6 +51,7 @@ public class JwtValidationFilter extends BasicAuthenticationFilter {
         // verificamos si la cabecera es null o no existe el prefijo Bearer
         if (header == null || !header.startsWith(PREFINX_TOKEN)) {
 
+            chain.doFilter(request, response);//para que siga el filtro
             return;
         }
 
