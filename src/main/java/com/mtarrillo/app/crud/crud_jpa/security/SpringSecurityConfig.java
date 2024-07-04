@@ -45,8 +45,13 @@ public class SpringSecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
       return http.authorizeHttpRequests( (authz) -> authz
-       .requestMatchers(HttpMethod.GET,  "/api/users").permitAll()//dejamos publico la ruta users
-       .requestMatchers(HttpMethod.POST,  "/api/users/register").permitAll()//dejamos publico
+       .requestMatchers(HttpMethod.GET,  "/api/users").permitAll()//listar los usuarios
+       .requestMatchers(HttpMethod.POST,  "/api/users/register").permitAll()//se registra un usuario
+       .requestMatchers(HttpMethod.POST,  "/api/users").hasRole("ADMIN")//solo crea usuarios  admin
+       .requestMatchers(HttpMethod.GET,  "/api/products","/api/products/{id}").hasAnyRole("ADMIN","USER")
+       .requestMatchers(HttpMethod.POST,  "/api/products").hasRole("ADMIN")//solo crear productos el admin
+       .requestMatchers(HttpMethod.PUT,  "/api/products/{id}").hasRole("ADMIN")//solo modifica el admin
+       .requestMatchers(HttpMethod.DELETE,  "/api/products/{id}").hasRole("ADMIN")//solo elimina el admin
            .anyRequest().authenticated()//los demas requiere autenticacion
       )
       .addFilter( new  JwtAuthenticationFilter( authenticationManager()  ))//pasamos por argumento( nuestro metodo)
