@@ -1,8 +1,12 @@
 package com.mtarrillo.app.crud.crud_jpa.security;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -12,6 +16,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import com.mtarrillo.app.crud.crud_jpa.security.filter.JwtAuthenticationFilter;
 import com.mtarrillo.app.crud.crud_jpa.security.filter.JwtValidationFilter;
@@ -61,6 +69,7 @@ public class SpringSecurityConfig {
       .csrf( 
             config->  config.disable()//no lo necesitamos en una ApiRest
       )
+      .cors(cors-> cors.configurationSource( configurationSource( )  ) )
       .sessionManagement(management -> 
            management.sessionCreationPolicy(SessionCreationPolicy.STATELESS)//para que la sesion http no tenga estado
            //y  todo lo que es autenticacion se maneje en el token
@@ -69,5 +78,37 @@ public class SpringSecurityConfig {
   
 
     }
+
+    @Bean
+    CorsConfigurationSource configurationSource( ){
+
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOriginPatterns(Arrays.asList("*"));
+        config.setAllowedMethods(Arrays.asList("GET","POST","DELETE","PUT"));
+        config.setAllowedHeaders(Arrays.asList("Authorization","Content-Type"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        //aqui le decimos que todos los cors se aplican desde la raiz
+        source.registerCorsConfiguration("/**", config);
+        return source;
+
+    }
+
+
+
+    @Bean
+    FilterRegistrationBean<CorsFilter> corsFilter(){
+
+
+        //estamos uniendo el filtro con la configuracion de configurationSource
+        FilterRegistrationBean<CorsFilter> corsBean = new FilterRegistrationBean<>( 
+            new CorsFilter( configurationSource( ) ) 
+            );
+            corsBean.setOrder( Ordered.HIGHEST_PRECEDENCE);
+            return corsBean; 
+
+    } 
+   
 
 }
